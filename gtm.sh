@@ -1,14 +1,16 @@
 #!/bin/bash
 
 # Your DNSTT Nameservers & Domain `A` Records
-declare -a NAMESERVERS=('sdns.art1.bagito.tech' 'sdns.jkim.bagito.tech')
-declare -a DOMAINS=('art1.bagito.tech' 'jkim.bagito.tech')
+NS='sdns.art1.bagito.tech'
+A='art1.bagito.tech'
+NS1='sdns.jkim.bagito.tech'
+A1='jkim.bagito.tech'
 
 # Repeat dig cmd loop time (seconds) (positive integer only)
 LOOP_DELAY=5
 
 # Add your DNS server IP addresses here
-declare -a HOSTS=('112.198.115.44' '112.198.115.36')
+declare -a HOSTS=('112.198.115.44' '124.6.181.20' '124.6.181.36' '112.198.115.36')
 
 # Linux' dig command executable filepath
 # Select value: "CUSTOM|C" or "DEFAULT|D"
@@ -33,13 +35,15 @@ restore_dns() {
 # Function to perform the DNS queries and display results
 check_dns() {
     local result
-    for (( i = 0; i < ${#NAMESERVERS[@]}; i++ )); do
-        result=$(_DIG +short +time=3 +tries=1 "@${HOSTS[$i]}" "${DOMAINS[$i]}")
-        if [ -n "$result" ]; then
-            echo -e "\e[1;32m\$ R: ${DOMAINS[$i]} D: ${NAMESERVERS[$i]}(${HOSTS[$i]})\e[0m"
-        else
-            echo -e "\e[1;31m\$ R: ${DOMAINS[$i]} D: ${NAMESERVERS[$i]}(${HOSTS[$i]})\e[0m"
-        fi
+    for host in "${HOSTS[@]}"; do
+        for record in "$NS" "$A" "$NS1" "$A1"; do
+            result=$(_DIG +short +time=3 +tries=1 "@$host" "$record")
+            if [ -n "$result" ]; then
+                echo -e "\e[1;32m\$ R: $record D: $host\e[0m"
+            else
+                echo -e "\e[1;31m\$ R: $record D: $host\e[0m"
+            fi
+        done
     done
 }
 
@@ -54,11 +58,14 @@ loop_dns_check() {
 }
 
 # Main script
-echo "DNSTT Keep-Alive script <Lantin>"
+echo "DNSTT Keep-Alive script <Discord @civ3>"
 echo "DNS List:"
 
-for (( i = 0; i < ${#NAMESERVERS[@]}; i++ )); do
-    echo -e "\e[1;34m${DOMAINS[$i]} => ${NAMESERVERS[$i]}(${HOSTS[$i]})\e[0m"
+for host in "${HOSTS[@]}"; do
+    echo -e "\e[1;34m$NS => $host\e[0m"
+    echo -e "\e[1;34m$A => $host\e[0m"
+    echo -e "\e[1;34m$NS1 => $host\e[0m"
+    echo -e "\e[1;34m$A1 => $host\e[0m"
 done
 
 echo "CTRL + C to close script"
