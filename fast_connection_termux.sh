@@ -1,21 +1,24 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/bin/bash
 
-# Check if the script is invoked with the correct arguments
-if [ $# -ne 1 ]; then
-    echo "Usage: $0 <HOST_OR_IP>"
-    exit 1
-fi
+# Array to store the list of IP addresses or hosts
+HOSTS=('178.128.211.108' '159.223.61.171')
 
-HOST_OR_IP="178.128.211.108"
+# Function to test the connection and find the fastest IP address
+find_fastest_connection() {
+    local fastest_host=""
+    local fastest_response_time=999999
 
-# Function to test the connection
-test_connection() {
-    local response_time=$(ping -c 5 -i 0.2 -q "$HOST_OR_IP" | grep -oP '(?<=time=)\d+\.\d+')
-    echo "Average response time to $HOST_OR_IP: ${response_time} ms"
+    for host in "${HOSTS[@]}"; do
+        local response_time=$(ping -c 5 -i 0.2 -q "$host" | grep -oP '(?<=time=)\d+\.\d+')
+        echo "Response time to $host: ${response_time} ms"
+
+        if (( $(bc <<< "$response_time < $fastest_response_time") )); then
+            fastest_host="$host"
+            fastest_response_time="$response_time"
+        fi
+    done
+
+    echo "Fastest host: $fastest_host with response time $fastest_response_time ms"
 }
 
-# Run the test_connection function repeatedly
-while true; do
-    test_connection
-    sleep 5
-done
+find_fastest_connection
