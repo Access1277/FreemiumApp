@@ -19,4 +19,3 @@ while true; do
     test_connection
     sleep 5
 done
-
