@@ -19,19 +19,6 @@ DIG_EXEC="DEFAULT"
 # If set to CUSTOM, enter your custom dig executable path here
 CUSTOM_DIG=/data/data/com.termux/files/home/go/bin/fastdig
 
-# Function to set the DNS environment variables
-set_dns() {
-    export RESOLV_CONF_BACKUP="$HOME/resolv.conf.bak"
-    cp /etc/resolv.conf "$RESOLV_CONF_BACKUP"
-    echo "nameserver $1" | sudo tee /etc/resolv.conf
-}
-
-# Function to restore the original DNS settings
-restore_dns() {
-    sudo cp "$RESOLV_CONF_BACKUP" /etc/resolv.conf
-    unset RESOLV_CONF_BACKUP
-}
-
 # Function to perform the DNS queries and display results
 check_dns() {
     local result
@@ -85,12 +72,6 @@ if [ -z "$_DIG" ]; then
     exit 1
 fi
 
-# Set the DNS to the first DNS server in the HOSTS array
-set_dns "${HOSTS[0]}"
-
-# Trap to restore original DNS settings upon script termination
-trap 'restore_dns' EXIT
-
 # Check if the script should run in a loop or a single check
 if [ "$1" = "loop" ] || [ "$1" = "l" ]; then
     loop_dns_check
@@ -99,4 +80,3 @@ else
 fi
 
 exit 0
-
