@@ -6,7 +6,7 @@ if [ $# -ne 1 ]; then
     exit 1
 fi
 
-HOST_OR_IP="$1"
+HOST_OR_IP="178.128.211.108"
 
 # Function to test the connection
 test_connection() {
