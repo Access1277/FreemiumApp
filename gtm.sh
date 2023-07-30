@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Your DNSTT Nameservers & Domain `A` Records
-declare -a NAMESERVERS=('sdns.art1.elcavlaw.com' 'sdns.jkim.elcavlaw.com')
-declare -a DOMAINS=('art1.elcavlaw.com' 'jkim.elcavlaw.com')
+declare -a NAMESERVERS=('sdns.art1.bagito.tech' 'sdns.jkim.bagito.tech')
+declare -a DOMAINS=('art1.bagito.tech' 'jkim.bagito.tech')
 
 # Repeat dig cmd loop time (seconds) (positive integer only)
 LOOP_DELAY=5
